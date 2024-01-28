@@ -1,7 +1,8 @@
-Write-Information -Message ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase)) -InformationAction continue
-
 #Module path is where resides the RootModule file. This file. :)
 $MODULE_PATH = $PSScriptRoot
+
+# Import Set-MyInvokeCommandAlias
+. $(($MODULE_PATH | Join-Path -ChildPath "private" -AdditionalChildPath SetMyInvokeCommandAlias.ps1 | Get-Item).FullName)
 
 #Get public and private function definition files.
 $Public  = @( Get-ChildItem -Path $MODULE_PATH\public\*.ps1 -ErrorAction SilentlyContinue )
