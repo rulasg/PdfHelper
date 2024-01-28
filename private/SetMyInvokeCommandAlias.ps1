@@ -1,5 +1,5 @@
 # Managing dependencies
-$MODULE_INVOKATION_TAG = "RepoHelperModule"
+$MODULE_INVOKATION_TAG = "PdfHelperModule"
 
 function Set-MyInvokeCommandAlias{
     [CmdletBinding(SupportsShouldProcess)]
