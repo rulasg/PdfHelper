@@ -2,7 +2,7 @@
 Set-MyInvokeCommandAlias -Alias "RepoClone" -Command 'gh repo clone {repowithowner} {folder}'
 Set-MyInvokeCommandAlias -Alias "DotnetBuild" -Command 'dotnet build {projectFolder} -c Release -o {outFolder}'
 
-# local
+# LOCAL
 # - pdfInjector
 #     - bin
 #         - PdfInjector.exe
@@ -12,14 +12,13 @@ Set-MyInvokeCommandAlias -Alias "DotnetBuild" -Command 'dotnet build {projectFol
 #             - PdfInjector
 
 # Variables
-$local = $PSScriptRoot
-$modulePath = $local | split-path -Parent
+$LOCAL = $PSScriptRoot
+$PDF_INJECTOR_FOLDER = $LOCAL | split-path -Parent | Join-Path -ChildPath "pdfInjector"
 
-$pdfInjectorFolder      = $modulePath | Join-Path -ChildPath "pdfInjector"
-$pdfInjectorBin         = $pdfInjectorFolder | Join-Path -ChildPath "bin"
-$pdfInjectorExe         = $pdfInjectorFolder | Join-Path -ChildPath "bin" -AdditionalChildPath "PdfInjector"
-$pdfInjectorRepoPath    = $pdfInjectorFolder | Join-Path -ChildPath "repo"
-$pdfInjectorProjectPath = $pdfInjectorFolder | Join-Path -ChildPath "repo" -AdditionalChildPath "src"
+$PDF_INJECTOR_BIN          = $PDF_INJECTOR_FOLDER | Join-Path -ChildPath "bin"
+$PDF_INJECTOR_EXE          = $PDF_INJECTOR_FOLDER | Join-Path -ChildPath "bin" -AdditionalChildPath "PdfInjector"
+$PDF_INJECTOR_REPO_PATH    = $PDF_INJECTOR_FOLDER | Join-Path -ChildPath "repo"
+$PDF_INJECTOR_PROJECT_PATH = $PDF_INJECTOR_FOLDER | Join-Path -ChildPath "repo" -AdditionalChildPath "src"
 
 $pdfInjectorRepo = "rulasg/PdfInjector"
 
@@ -41,14 +40,14 @@ function Install-PdfInjector{
     }
 
     # Copy the repo
-    $result = Copy-PdfInjector -RepoWithOwner $pdfInjectorRepo -Destination $pdfInjectorRepoPath
+    $result = Copy-PdfInjector -RepoWithOwner $pdfInjectorRepo -Destination $PDF_INJECTOR_REPO_PATH
     if(! $result){
         Write-Error "Failed to copy PdfInjector"
         return $false
     }
 
     # Build the project
-    $result = Build-PdfInjector -projectFolder $pdfInjectorProjectPath -outFolder $pdfInjectorBin
+    $result = Build-PdfInjector -projectFolder $PDF_INJECTOR_PROJECT_PATH -outFolder $PDF_INJECTOR_BIN
     $result ? "PdfInjector installed" : "Failed to build PdfInjector" | Write-Verbose
 
     return Test-PdfInjector;
@@ -64,10 +63,10 @@ function Remove-PdfInjector{
     param(
     )
 
-    $folder = $pdfInjectorFolder
+    $folder = $PDF_INJECTOR_FOLDER
 
-    if ($pdfInjectorFolder | Test-Path) {
-        if ($PSCmdlet.ShouldProcess($pdfInjectorFolder, "Remove folder")) {
+    if ($PDF_INJECTOR_FOLDER | Test-Path) {
+        if ($PSCmdlet.ShouldProcess($PDF_INJECTOR_FOLDER, "Remove folder")) {
             Remove-Item -Path $Folder -Recurse -Force
             $ret = ! ($Folder | Test-Path)
         } else {
@@ -83,12 +82,12 @@ function Test-PdfInjector{
     [CmdletBinding()]
     param()
 
-    return $pdfInjectorExe | Test-Path
+    return $PDF_INJECTOR_EXE | Test-Path
 } Export-ModuleMember -Function Test-PdfInjector
 
 <#
 .SYNOPSIS
-    Copy the PdfInjector repository to the local folder
+    Copy the PdfInjector repository to the LOCAL folder
 #>
 function Copy-PdfInjector{
     [CmdletBinding(SupportsShouldProcess)]
