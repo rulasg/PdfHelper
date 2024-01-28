@@ -1,5 +1,5 @@
 # Managing dependencies
-$MODULE_INVOKATION_TAG = "RepoHelperModule_Mock"
+$MODULE_INVOKATION_TAG = "PdfHelperModule_Mock"
 
 function Set-InvokeCommandMock{
     [CmdletBinding()]
