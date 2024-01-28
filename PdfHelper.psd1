@@ -51,7 +51,7 @@ Description = 'Module to create modified Pdf files using PdfInjector'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+RequiredModules = @(@{ModuleName="InvokeHelper"; ModuleVersion="1.1.7"})
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
