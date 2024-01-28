@@ -23,8 +23,15 @@ $pdfInjectorProjectPath = $pdfInjectorFolder | Join-Path -ChildPath "repo" -Addi
 
 $pdfInjectorRepo = "rulasg/PdfInjector"
 
+<#
+.SYNOPSIS
+    Install the PdfInjector tool for the module to use
+.DESCRIPTION
+    Clones the PdfInjector repository and builds the project to have the executable available
+#>
 function Install-PdfInjector{
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     # Check if already installed
@@ -47,15 +54,26 @@ function Install-PdfInjector{
     return Test-PdfInjector;
 } Export-ModuleMember -Function Install-PdfInjector
 
+<#
+.SYNOPSIS
+    Remove the PdfInjector tool from the module folder
+#>
 function Remove-PdfInjector{
-    [CmdletBinding()]
-    param()
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([bool])]
+    param(
+    )
+
+    $folder = $pdfInjectorFolder
 
     if ($pdfInjectorFolder | Test-Path) {
-        Remove-Item -Path $pdfInjectorFolder -Recurse -Force
+        if ($PSCmdlet.ShouldProcess($pdfInjectorFolder, "Remove folder")) {
+            Remove-Item -Path $Folder -Recurse -Force
+            $ret = ! ($Folder | Test-Path)
+        } else {
+            $ret = $true
+        }
     }
-
-    $ret = ! ($pdfInjectorFolder | Test-Path)
 
     return $ret
 } Export-ModuleMember -Function Remove-PdfInjector
