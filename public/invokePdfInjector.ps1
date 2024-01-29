@@ -39,10 +39,12 @@ function Invoke-PdfInjector {
     )
 
     begin{
-        $result = Test-PdfInjector
-        if(! $result){
-            Write-Error "PdfInjector not found"
-            return
+        # Install and Build PdfInjector
+        if(! ( Test-PdfInjector )){
+            if(!( Install-PdfInjector)){
+                Write-Error "PdfInjector not found"
+                return
+            }
         }
     }
 
