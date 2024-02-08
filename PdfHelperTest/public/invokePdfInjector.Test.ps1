@@ -13,7 +13,7 @@ function PdfHelperTest_InvokePdfInjector_Default_Success{
         StampName = "Default"
         PdfTemplate = $PDF_TEMPLATE
         PdfOutput = $pdfOutFile
-        StudentName = "studentName"
+        StudentName = "Student Name"
         StudentHandle = "studentHandle"
         StudentCompany = "studentCompany"
         TrainerName = "trainerName"
@@ -42,7 +42,7 @@ function PdfHelperTest_InvokePdfInjector_V1_Success{
         StampName = "solidify_training_v1"
         PdfTemplate = $PDF_TEMPLATE
         PdfOutput = $pdfOutFile
-        StudentName = "studentName"
+        StudentName = "Student Name"
         StudentHandle = "studentHandle"
         StudentCompany = "studentCompany"
         TrainerName = "trainerName"
@@ -60,7 +60,7 @@ function PdfHelperTest_InvokePdfInjector_V1_Success{
     Assert-ItemExist -Path $result
 }
 
-function PdfHelperTest_InvokePdfInjector_Default_Success_MultiUser{
+function PdfHelperTest_InvokePdfInjector_V1_Success_MultiUser{
 
     $pdf = @{
         StampName = "solidify_training_v1"
@@ -108,4 +108,116 @@ function Get-UserName($handle){
     }
     
     return $ret
+}
+
+function PdfHelperTest_InvokePdfInjector_V2_Success{
+
+    Install-PdfInjector
+
+    $pdfOutFile = './result_V1.pdf'
+
+    $param = @{
+        StampName = "solidify_training_v1"
+        PdfTemplate = $PDF_TEMPLATE
+        PdfOutput = $pdfOutFile
+        StudentName = "Student Name"
+        StudentHandle = "studentHandle"
+        StudentCompany = "studentCompany"
+        TrainerName = "trainerName"
+        TrainerHandle = "trainerHandle"
+        TrainerCompany = "trainerCompany"
+        CourseName = "courseName"
+        CourseDate = "courseDate"
+        Id = "1234567890"
+    }
+
+    $result = Invoke-PdfInjector @param
+
+    Assert-IsNotNull -Object $result
+    Assert-AreEqual -Expected $pdfOutFile -Presented $result
+    Assert-ItemExist -Path $result
+}
+
+function PdfHelperTest_InvokePdfInjector_V2_Success_Missing_StudentHandle{
+
+    Install-PdfInjector
+
+    $pdfOutFile = './result_V1.pdf'
+
+    $param = @{
+        StampName = "solidify_training_v2"
+        PdfTemplate = $PDF_TEMPLATE
+        PdfOutput = $pdfOutFile
+        StudentName = "Student Name"
+        # StudentHandle = "studentHandle"
+        StudentCompany = "studentCompany"
+        TrainerName = "trainerName"
+        TrainerHandle = "trainerHandle"
+        TrainerCompany = "trainerCompany"
+        CourseName = "courseName"
+        CourseDate = "courseDate"
+        Id = "1234567890"
+    }
+
+    $result = Invoke-PdfInjector @param
+
+    Assert-IsNotNull -Object $result
+    Assert-AreEqual -Expected $pdfOutFile -Presented $result
+    Assert-ItemExist -Path $result
+}
+
+function PdfHelperTest_InvokePdfInjector_V2_Success_Missing_StudentCompany{
+
+    Install-PdfInjector
+
+    $pdfOutFile = './result_V1.pdf'
+
+    $param = @{
+        StampName = "solidify_training_v2"
+        PdfTemplate = $PDF_TEMPLATE
+        PdfOutput = $pdfOutFile
+        StudentName = "Student Name"
+        StudentHandle = "studentHandle"
+        # StudentCompany = "studentCompany"
+        TrainerName = "trainerName"
+        TrainerHandle = "trainerHandle"
+        TrainerCompany = "trainerCompany"
+        CourseName = "courseName"
+        CourseDate = "courseDate"
+        Id = "1234567890"
+    }
+
+    $result = Invoke-PdfInjector @param
+
+    Assert-IsNotNull -Object $result
+    Assert-AreEqual -Expected $pdfOutFile -Presented $result
+    Assert-ItemExist -Path $result
+}
+
+function PdfHelperTest_InvokePdfInjector_V2_Success_Missing_StudentCompany_StudentHAndle{
+
+    Install-PdfInjector
+
+    $pdfOutFile = './result_V1.pdf'
+
+    $param = @{
+        StampName = "solidify_training_v2"
+        PdfTemplate = $PDF_TEMPLATE
+        PdfOutput = $pdfOutFile
+        StudentName = "Student Name"
+        # StudentHandle = "studentHandle"
+        # StudentCompany = "studentCompany"
+        TrainerName = "trainerName"
+        TrainerHandle = "trainerHandle"
+        TrainerCompany = "trainerCompany"
+        CourseName = "courseName"
+        CourseDate = "courseDate"
+        Id = "1234567890"
+    }
+
+    $result = Invoke-PdfInjector @param
+
+    Assert-IsNotNull -Object $result
+    Assert-AreEqual -Expected $pdfOutFile -Presented $result
+    Assert-ItemExist -Path $result
 }
