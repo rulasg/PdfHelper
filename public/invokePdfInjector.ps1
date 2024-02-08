@@ -7,7 +7,7 @@ Set-MyInvokeCommandAlias -Alias InvokePdfInjector -Command 'dotnet run --project
 
 # --help | -h      | -?   : Prints this help message
 
-# --stampname      | -s   : Stamp name (e.g. 'solidify_training_v1')
+# --stampname      | -s   : Stamp name (e.g. '2')
 # --pdftemplate    | -t   : Path to the PDF template
 # --pdfoutput      | -o   : Path to the output PDF file
 # --studentname    | -sn  : Student name
@@ -24,18 +24,19 @@ function Invoke-PdfInjector {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-        [ValidateSet('Default','solidify_training_v1')][string]$StampName,
+        [ValidateSet('Default','solidify_training_v1','solidify_training_v2')][string]$StampName,
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$PdfTemplate,
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$PdfOutput,
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$StudentName,
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$StudentHandle,
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$StudentCompany,
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$TrainerName,
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$TrainerHandle,
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$TrainerCompany,
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$CourseName,
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$CourseDate,
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$Id
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName)][string]$Id,
+
+        [Parameter(ValueFromPipelineByPropertyName)][string]$StudentName,
+        [Parameter(ValueFromPipelineByPropertyName)][string]$StudentCompany,
+        [Parameter(ValueFromPipelineByPropertyName)][string]$StudentHandle
     )
 
     begin{
@@ -49,20 +50,25 @@ function Invoke-PdfInjector {
     }
 
     process{
-
         # $parameters = "-s $StampName -t $PdfTemplate -o $PdfOutput -sn $StudentName -sh $StudentHandle -sc $StudentCompany -tn $TrainerName -th $TrainerHandle -tc $TrainerCompany -cn $CourseName -cd $CourseDate -i $Id"
         $parameters = '-s "{s}" -t "{t}" -o "{o}" -sn "{sn}" -sh "{sh}" -sc "{sc}" -tn "{tn}" -th "{th}" -tc "{tc}" -cn "{cn}" -cd "{cd}" -i "{i}"'
-        $parameters = $parameters -replace "{s}", $StampName
-        $parameters = $parameters -replace "{t}", $PdfTemplate
-        $parameters = $parameters -replace "{o}", $PdfOutput
-        $parameters = $parameters -replace "{sn}", $StudentName
-        $parameters = $parameters -replace "{sh}", $StudentHandle
-        $parameters = $parameters -replace "{sc}", $StudentCompany
+
+        # Optional parameters Student
+        $parameters = $parameters -replace "{sc}"      , $([string]::IsNullOrEmpty($StudentCompany)    ? " " : $StudentCompany)
+        $parameters = $parameters -replace "{sh}"      , $([string]::IsNullOrEmpty($StudentHandle)     ? " " : $StudentHandle)
+        $parameters = $parameters -replace "{sn}"      , $([string]::IsNullOrEmpty($StudentName)       ? " " : $StudentName)
+
+        # Mandatory parameters course
         $parameters = $parameters -replace "{tn}", $TrainerName
         $parameters = $parameters -replace "{th}", $TrainerHandle
         $parameters = $parameters -replace "{tc}", $TrainerCompany
         $parameters = $parameters -replace "{cn}", $CourseName
         $parameters = $parameters -replace "{cd}", $CourseDate
+        
+        # Mandatory parameters pdf trasnformation
+        $parameters = $parameters -replace "{o}", $PdfOutput
+        $parameters = $parameters -replace "{s}", $StampName
+        $parameters = $parameters -replace "{t}", $PdfTemplate
         $parameters = $parameters -replace "{i}", $Id
 
         $param = @{
